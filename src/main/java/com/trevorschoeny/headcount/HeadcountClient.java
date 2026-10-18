@@ -3,7 +3,7 @@ package com.trevorschoeny.headcount;
 import net.fabricmc.api.ClientModInitializer;
 
 /**
- * Headcount's client half: the crowd count and scroll to pick, both client-only.
+ * Headcount's client half: the cramming count and scroll to pick, both client-only.
  * The server half (range counts, the real maxEntityCramming value) gets its own
  * main entrypoint when it is built.
  */

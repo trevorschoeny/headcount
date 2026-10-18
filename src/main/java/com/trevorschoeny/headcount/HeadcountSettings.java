@@ -11,20 +11,20 @@ public final class HeadcountSettings {
     private HeadcountSettings() {}
 
     // Vanilla's maxEntityCramming default. The game rule isn't sent to the client,
-    // so without Headcount on the server the crowd count measures against this.
+    // so without Headcount on the server the cramming count measures against this.
     // The setting's tooltip will say so when ConfigKit gives it a page.
     public static final int DEFAULT_CRAMMING_LIMIT = 24;
 
     // Looking at two or more overlapping entities shows "n / limit" near the crosshair.
-    private static volatile boolean crowdCount = true;
+    private static volatile boolean crammingCount = true;
 
-    // Looking at a crowd takes the mouse wheel from the hotbar to step through it.
+    // Looking at crammed entities takes the mouse wheel from the hotbar to step through them.
     private static volatile boolean scrollToPick = true;
 
-    public static boolean crowdCount()   { return crowdCount; }
-    public static boolean scrollToPick() { return scrollToPick; }
+    public static boolean crammingCount() { return crammingCount; }
+    public static boolean scrollToPick()  { return scrollToPick; }
 
     // Setters are not saved anywhere until ConfigKit, so a toggle lasts the session.
-    public static void setCrowdCount(boolean v)   { crowdCount = v; }
+    public static void setCrammingCount(boolean v) { crammingCount = v; }
     public static void setScrollToPick(boolean v) { scrollToPick = v; }
 }

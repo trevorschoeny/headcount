@@ -3,7 +3,7 @@
   "id": "headcount",
   "version": "${version}",
   "name": "Headcount",
-  "description": "See how many entities are crammed into a block, pick any one of them out of the crowd, and keep counts of the entities around you on the HUD.",
+  "description": "See how many entities are crammed into a block, scroll through the crammed entities to pick one, and keep counts of the entities around you on the HUD.",
   "authors": [
     "trevorschoeny"
   ],
