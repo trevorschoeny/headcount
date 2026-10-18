@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import testgallery.SceneWorld;
 
 /**
- * Screenshots of the cramming scene's stations that are left to Trev's eyes (the gold
- * count, the outline stepping through the sheep), for when he reviews away from the
+ * Screenshots of how the cramming scene looks (the count under the crosshair, the
+ * outline and number stepping through the sheep), for when he reviews away from the
  * game. Asserts nothing. Shots land in build/run/clientGameTest/screenshots/.
  */
 public class CrammingShots implements FabricClientGameTest {
@@ -17,8 +17,8 @@ public class CrammingShots implements FabricClientGameTest {
             scene.world().getServer().runCommand("gamerule send_command_feedback false");
             ctx.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
 
-            CrammingChecks.aimAt(ctx, scene, "hc_near", 0);
-            ctx.takeScreenshot("shot-1-near-limit-gold");
+            CrammingChecks.aimAt(ctx, scene, "hc_count", 0);
+            ctx.takeScreenshot("shot-1-count");
 
             CrammingChecks.aimAt(ctx, scene, "hc_sheep", 2);
             ctx.takeScreenshot("shot-2-sheep-before-scroll");

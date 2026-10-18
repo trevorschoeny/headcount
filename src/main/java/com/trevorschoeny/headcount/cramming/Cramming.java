@@ -47,6 +47,13 @@ public final class Cramming {
     private static final int NONE = -1;
     private static int pickedId = NONE;
 
+    // The last entity picked, kept after you look away (pickedId is not), so coming back
+    // and scrolling carries on from it: wax number 3, look away, come back, scroll, and
+    // number 4 is next. Each entity's number is its place in id order, so it holds as long
+    // as the same entities are crammed together; it shifts only when that set changes,
+    // and restarting the game renumbers everything.
+    private static int lastPickedId = NONE;
+
     /**
      * Runs right after vanilla's crosshair pick each frame. Records the crammed entities
      * around vanilla's target and, if the player has picked one of them, returns a hit on
@@ -105,10 +112,13 @@ public final class Cramming {
      */
     public static boolean scroll(int wheel) {
         if (!HeadcountSettings.scrollToPick() || crammed.size() < 2) return false;
-        // The first notch starts from the entity the crosshair is on.
-        int from = pickedId == NONE ? lookedIndex() : pickedIndex();
+        // The first notch carries on from the last pick if it is still here, else starts
+        // from the entity the crosshair is on.
+        int from = pickedId != NONE ? indexOf(pickedId)
+                : indexOf(lastPickedId) >= 0 ? indexOf(lastPickedId)
+                : lookedIndex();
         int to = ScrollWheelHandler.getNextScrollWheelSelection(wheel, from, crammed.size());
-        pickedId = crammed.get(to).getId();
+        pickedId = lastPickedId = crammed.get(to).getId();
         return true;
     }
 
@@ -122,7 +132,7 @@ public final class Cramming {
 
     /** The pick's 1-based place among the crammed entities, or 0 before the wheel is used. */
     public static int pickNumber() {
-        return pickedId == NONE ? 0 : pickedIndex() + 1;
+        return pickedId == NONE ? 0 : indexOf(pickedId) + 1;
     }
 
     /**
@@ -144,9 +154,10 @@ public final class Cramming {
         return null;
     }
 
-    private static int pickedIndex() {
-        for (int i = 0; i < crammed.size(); i++) if (crammed.get(i).getId() == pickedId) return i;
-        return 0;
+    // The place of entity `id` among the crammed entities, or -1 if it isn't one of them.
+    private static int indexOf(int id) {
+        for (int i = 0; i < crammed.size(); i++) if (crammed.get(i).getId() == id) return i;
+        return -1;
     }
 
     private static int lookedIndex() {

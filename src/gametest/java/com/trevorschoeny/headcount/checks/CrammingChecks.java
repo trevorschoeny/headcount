@@ -4,6 +4,7 @@ import com.trevorschoeny.headcount.cramming.Cramming;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.golem.CopperGolem;
 import net.minecraft.world.phys.Vec3;
 import testgallery.SceneWorld;
@@ -25,6 +26,7 @@ public class CrammingChecks implements FabricClientGameTest {
             countsCrammedPigs(ctx, scene);
             countsOnlyOverlappingNeighbours(ctx, scene);
             honeycombWaxesThePickedGolem(ctx, scene);
+            attackHitsOnlyThePickedPig(ctx, scene);
             lookingAwayGivesTheWheelBack(ctx, scene);
         }
     }
@@ -82,6 +84,42 @@ public class CrammingChecks implements FabricClientGameTest {
         boolean pickedWaxed = waxed(scene, picked), lookedWaxed = waxed(scene, looked);
         if (!pickedWaxed || lookedWaxed)
             throw new AssertionError("honeycomb should wax the picked golem only; picked waxed " + pickedWaxed + ", crosshair's waxed " + lookedWaxed);
+    }
+
+    /**
+     * Station "headcount:attack": with six pigs crammed together, one scroll and one punch
+     * hurt the picked pig and no other. Then, after looking away and back, the next scroll
+     * carries on from that pig's number rather than starting over.
+     */
+    private static void attackHitsOnlyThePickedPig(ClientGameTestContext ctx, SceneWorld.Opened scene) {
+        ctx.getInput().pressKey(options -> options.keyHotbarSlots[0]);   // empty hand: a punch, no sweep
+        aimAt(ctx, scene, "hc_attack", 0);
+        ctx.getInput().scroll(-1);
+        ctx.waitTicks(2);
+        int picked = ctx.computeOnClient(mc -> Cramming.picked() == null ? -1 : Cramming.picked().getId());
+        int number = ctx.computeOnClient(mc -> Cramming.pickNumber());
+        ctx.waitTicks(20);   // full attack strength
+        ctx.getInput().pressKey(options -> options.keyAttack);
+        ctx.waitTicks(5);
+
+        List<String> hurt = scene.world().getServer().computeOnServer(server -> {
+            List<String> out = new ArrayList<>();
+            for (Entity e : server.overworld().getAllEntities())
+                if (e.entityTags().contains("hc_attack") && e instanceof LivingEntity l && l.getHealth() < l.getMaxHealth())
+                    out.add(String.valueOf(e.getId()));
+            return out;
+        });
+        if (!hurt.equals(List.of(String.valueOf(picked))))
+            throw new AssertionError("a punch should hurt only the picked pig (" + picked + "); hurt: " + hurt);
+
+        scene.standAt(scene.station("headcount:look_away"), 60);
+        ctx.waitTicks(5);
+        aimAt(ctx, scene, "hc_attack", 0);
+        ctx.getInput().scroll(-1);
+        ctx.waitTicks(2);
+        int next = ctx.computeOnClient(mc -> Cramming.pickNumber());
+        if (next != number % 6 + 1)
+            throw new AssertionError("after looking away, the next scroll should go from " + number + " to " + (number % 6 + 1) + "; went to " + next);
     }
 
     /** Station "headcount:look_away": with no entity under the crosshair the wheel moves the hotbar. */
