@@ -6,9 +6,7 @@
   "entrypoints": {
     "fabric-client-gametest": [
       "com.trevorschoeny.headcount.checks.CrammingChecks",
-      "com.trevorschoeny.headcount.checks.CrammingShots",
-      "com.trevorschoeny.headcount.checks.InfoChecks",
-      "com.trevorschoeny.headcount.checks.InfoShots"
+      "com.trevorschoeny.headcount.checks.CrammingShots"
     ]
   }
 }
