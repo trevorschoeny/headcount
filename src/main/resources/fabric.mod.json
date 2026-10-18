@@ -17,6 +17,9 @@
     "headcount.mixins.json"
   ],
   "entrypoints": {
+    "main": [
+      "com.trevorschoeny.headcount.Headcount"
+    ],
     "client": [
       "com.trevorschoeny.headcount.HeadcountClient"
     ]
