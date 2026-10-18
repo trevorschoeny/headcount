@@ -11,7 +11,8 @@ import net.minecraft.client.Minecraft;
 /**
  * HUD: with the crosshair on two or more crammed entities, one white line just under the
  * crosshair says how many ("18"). While the wheel has picked one, the same line says which
- * ("3 / 18"). One entity on its own shows nothing. No "/ 24": anyone cramming knows the
+ * ("3 / 18"). Until then a grey hint under it says the wheel can pick ("Scroll to select").
+ * One entity on its own shows nothing. No "/ 24": anyone cramming knows the
  * limit (Trev, 2026-10-18).
  */
 public final class CrammingReadout {
@@ -22,15 +23,30 @@ public final class CrammingReadout {
     // under the crosshair (which reaches 7px below the centre).
     private static final int NUDGE = -7;
 
+    // The hint reads as a hint, a step quieter than the white count.
+    private static final int HINT = 0xFFAAAAAA;   // ARGB: text colours carry alpha
+
     public static void register() {
         HudPanel.builder("headcount:cramming")
-                .region(InsideRegion.CENTER).offset(0, NUDGE)
+                .region(InsideRegion.CENTER).offset(0, NUDGE).priority(0)
                 .autoSize().padding(0)
                 .style(PanelStyle.NONE)
-                .visibleWhen(() -> Minecraft.getInstance().gui.screen() == null
-                        && HeadcountSettings.crammingCount() && Cramming.count() >= 2)
+                .visibleWhen(CrammingReadout::showCount)
                 .text(0, 0, CrammingReadout::line)
                 .build();
+        // A second panel, so the hint centres on its own; MenuKit stacks it under the count.
+        HudPanel.builder("headcount:scroll-hint")
+                .region(InsideRegion.CENTER).offset(0, NUDGE).priority(1).gap(1)
+                .autoSize().padding(0)
+                .style(PanelStyle.NONE)
+                .visibleWhen(() -> showCount() && HeadcountSettings.scrollToPick() && Cramming.pickNumber() == 0)
+                .text(0, 0).text(() -> "Scroll to select").color(HINT).done()
+                .build();
+    }
+
+    private static boolean showCount() {
+        return Minecraft.getInstance().gui.screen() == null
+                && HeadcountSettings.crammingCount() && Cramming.count() >= 2;
     }
 
     private static String line() {
