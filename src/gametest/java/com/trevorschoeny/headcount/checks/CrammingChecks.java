@@ -99,7 +99,7 @@ public class CrammingChecks implements FabricClientGameTest {
      * it, well within reach. `index` counts the tagged mobs from the west end. Aimed at
      * where the mob really is, not where the scene summoned it, since crammed mobs shift.
      */
-    private static void aimAt(ClientGameTestContext ctx, SceneWorld.Opened scene, String tag, int index) {
+    static void aimAt(ClientGameTestContext ctx, SceneWorld.Opened scene, String tag, int index) {
         Vec3 at = scene.world().getServer().computeOnServer(server -> {
             List<Vec3> spots = new ArrayList<>();
             for (Entity e : server.overworld().getAllEntities())
