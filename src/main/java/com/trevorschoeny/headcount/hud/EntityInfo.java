@@ -8,6 +8,7 @@ import com.trevlar.menukit.api.element.Icon;
 import com.trevlar.menukit.api.element.ItemDisplay;
 import com.trevlar.menukit.api.element.TextLabel;
 import com.trevlar.menukit.api.hud.HudPanel;
+import com.trevlar.menukit.api.panel.InsideRegion;
 import com.trevlar.menukit.api.panel.PanelStyle;
 
 import java.util.ArrayList;
@@ -35,8 +36,7 @@ import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * HUD: what an entity is and what's on it, at the top centre of the screen (or a corner,
- * by setting) on a faint backdrop,
+ * HUD: what an entity is and what's on it, at the top centre of the screen, no box,
  * modelled on Jade's entity readout (Trev, 2026-10-18) plus Headcount's additions:
  *
  * <pre>
@@ -77,23 +77,8 @@ public final class EntityInfo {
             EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.BODY, EquipmentSlot.SADDLE};
 
     public static void register() {
-        // One panel per position: a HUD panel's spot is fixed at registration, so the
-        // setting picks which of these shows. Each gets its own column of elements.
-        for (HeadcountSettings.InfoPosition pos : HeadcountSettings.InfoPosition.values()) {
-            HudPanel.builder("headcount:info-" + pos.name().toLowerCase())
-                    .region(pos.region)
-                    // A faint backdrop, so the text reads over mobs and terrain.
-                    .style(PanelStyle.DARK).padding(4)
-                    .visibleWhen(() -> HeadcountSettings.infoPosition() == pos
-                            && Minecraft.getInstance().gui.screen() == null
-                            && HeadcountSettings.entityInfo() && target() != null)
-                    .element(column())
-                    .build();
-        }
-    }
-
-    // The readout's lines, top to bottom.
-    private static Flow column() {
+        // Every supplier below copes with no target: MenuKit's Flow measures hidden
+        // children too, so a line is read even while it isn't shown.
         Flow.Builder column = Flow.builder().vertical().gap(2);
 
         column.add(label(() -> target() == null ? Component.empty() : target().getDisplayName(), () -> true));
@@ -127,7 +112,13 @@ public final class EntityInfo {
 
         column.add(label(EntityInfo::modName, () -> true));
 
-        return column.build();
+        HudPanel.builder("headcount:info")
+                .region(InsideRegion.TOP_CENTER)
+                .style(PanelStyle.NONE)
+                .visibleWhen(() -> Minecraft.getInstance().gui.screen() == null
+                        && HeadcountSettings.entityInfo() && target() != null)
+                .element(column.build())
+                .build();
     }
 
     // ── The target and what's known about it ─────────────────────────────
