@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "headcount",
+  "version": "${version}",
+  "name": "Headcount",
+  "description": "See how many entities are crammed into a block, pick any one of them out of the crowd, and keep counts of the entities around you on the HUD.",
+  "authors": [
+    "trevorschoeny"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/headcount",
+    "sources": "https://github.com/trevorschoeny/headcount"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.trevorschoeny.headcount.HeadcountClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "menukit": ">=7.3.0 <8.0.0"
+  }
+}
