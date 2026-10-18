@@ -78,9 +78,7 @@ fabricApi {
         eula = true
     }
 }
-tasks.named('runClientGameTest') {
-    jvmArgs "-Dtestgallery.dir=${rootProject.file('Trevlar Mods Codebases/test-gallery')}"
-}
+apply from: rootProject.file('Trevlar Mods Codebases/test-gallery/kit/checks.gradle')   // SceneWorld
 
 jar {
     from('LICENSE') { rename { "${it}_${project.name}" } }

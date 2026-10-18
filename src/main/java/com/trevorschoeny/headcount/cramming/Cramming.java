@@ -15,6 +15,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.Team.CollisionRule;
 
 /**
  * The crammed entities under the crosshair, and which one of them the player has picked.
@@ -72,11 +74,28 @@ public final class Cramming {
     static List<Entity> crammedWith(Entity target) {
         List<Entity> out = new ArrayList<>();
         out.add(target);
-        for (Entity e : target.level().getPushableEntities(target, target.getBoundingBox())) {
-            if (!e.isPassenger()) out.add(e);   // vanilla doesn't count passengers either
-        }
+        // Not level.getPushableEntities: on the client its predicate admits only the local
+        // player, so the server's rule is applied here instead (pushesAgainst).
+        out.addAll(target.level().getEntities(target, target.getBoundingBox(),
+                e -> !e.isPassenger() && pushesAgainst(target, e)));   // vanilla doesn't count passengers either
         out.sort(Comparator.comparingInt(Entity::getId));
         return out;
+    }
+
+    /**
+     * EntitySelector.pushableBy as the server runs it: not a spectator, pushable, and the
+     * two entities' team collision rules allow it. A team with collisionRule "never" is a
+     * common way to stop cramming, so the count has to honour it like vanilla does.
+     */
+    static boolean pushesAgainst(Entity target, Entity other) {
+        Team ownTeam = target.getTeam(), theirTeam = other.getTeam();
+        CollisionRule own = ownTeam == null ? CollisionRule.ALWAYS : ownTeam.getCollisionRule();
+        CollisionRule their = theirTeam == null ? CollisionRule.ALWAYS : theirTeam.getCollisionRule();
+        if (other.isSpectator() || !other.isPushable()) return false;
+        if (own == CollisionRule.NEVER || their == CollisionRule.NEVER) return false;
+        boolean sameTeam = ownTeam != null && ownTeam.isAlliedTo(theirTeam);
+        if ((own == CollisionRule.PUSH_OWN_TEAM || their == CollisionRule.PUSH_OWN_TEAM) && sameTeam) return false;
+        return own != CollisionRule.PUSH_OTHER_TEAMS && their != CollisionRule.PUSH_OTHER_TEAMS || sameTeam;
     }
 
     /**
@@ -118,7 +137,8 @@ public final class Cramming {
                 : HeadcountSettings.DEFAULT_CRAMMING_LIMIT;
     }
 
-    private static Entity picked() {
+    /** The picked entity, or null before the wheel is used on these crammed entities. */
+    public static Entity picked() {
         if (pickedId == NONE) return null;
         for (Entity e : crammed) if (e.getId() == pickedId) return e;
         return null;
