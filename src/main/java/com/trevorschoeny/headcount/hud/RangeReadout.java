@@ -3,16 +3,18 @@ package com.trevorschoeny.headcount.hud;
 import com.trevorschoeny.headcount.HeadcountSettings;
 import com.trevorschoeny.headcount.HeadcountSettings.RangeEntry;
 import com.trevorschoeny.headcount.ranges.RangeClient;
+import com.trevlar.menukit.api.element.Flow;
+import com.trevlar.menukit.api.element.TextLabel;
 import com.trevlar.menukit.api.hud.HudPanel;
-import com.trevlar.menukit.api.panel.InsideRegion;
 import com.trevlar.menukit.api.panel.PanelStyle;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 /**
- * HUD: the counts of the ranges marked "Show on HUD", one line each, top left:
- * "Hostile within 32: 14". Shown only when the server has Headcount, since only the
- * server can count.
+ * HUD: the counts of the ranges marked "Show on HUD", one line each:
+ * "Hostile within 32: 14". Top left by default, or any corner or top centre (setting).
+ * Shown only when the server has Headcount, since only the server can count.
  */
 public final class RangeReadout {
 
@@ -22,15 +24,25 @@ public final class RangeReadout {
     private static final int MAX_LINES = 16;
 
     public static void register() {
-        HudPanel.Builder panel = HudPanel.builder("headcount:ranges")
-                .region(InsideRegion.TOP_LEFT)
-                .style(PanelStyle.NONE)
-                .visibleWhen(() -> Minecraft.getInstance().gui.screen() == null && RangeClient.serverCounts());
-        for (int i = 0; i < MAX_LINES; i++) {
-            int n = i;
-            panel.text(0, i * 10).text(() -> line(n)).color(WHITE).done();
+        // One panel per position: a HUD panel's spot is fixed at registration, so the
+        // setting picks which of these shows.
+        for (HeadcountSettings.HudPosition pos : HeadcountSettings.HudPosition.values()) {
+            // A vertical Flow, so lines past the last range take no room (in a bottom
+            // corner the text sits on the bottom edge however many lines there are).
+            Flow.Builder lines = Flow.builder().vertical().gap(2);
+            for (int i = 0; i < MAX_LINES; i++) {
+                int n = i;
+                lines.add(TextLabel.builder().text(() -> Component.literal(line(n))).color(WHITE).shadow(true)
+                        .visibleWhen(() -> !line(n).isEmpty()).build());
+            }
+            HudPanel.builder("headcount:ranges-" + pos.name().toLowerCase())
+                    .region(pos.region)
+                    .style(PanelStyle.NONE)
+                    .visibleWhen(() -> HeadcountSettings.rangesPosition() == pos
+                            && Minecraft.getInstance().gui.screen() == null && RangeClient.serverCounts())
+                    .element(lines.build())
+                    .build();
         }
-        panel.build();
     }
 
     // The n-th HUD line: the n-th range with "Show on HUD", or empty past the last.

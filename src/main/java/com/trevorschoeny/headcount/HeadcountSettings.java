@@ -1,5 +1,6 @@
 package com.trevorschoeny.headcount;
 
+import com.trevlar.menukit.api.panel.InsideRegion;
 import com.trevorschoeny.headcount.ranges.Category;
 import com.trevorschoeny.headcount.ranges.RangeSpec;
 
@@ -33,7 +34,19 @@ public final class HeadcountSettings {
             new RangeEntry(RangeSpec.of(32, Category.HOSTILE), true),
             new RangeEntry(RangeSpec.of(128, Category.HOSTILE), true));
 
+    /** Where the range counts sit: any corner, or top centre. */
+    public enum HudPosition {
+        TOP_LEFT(InsideRegion.TOP_LEFT), TOP_CENTER(InsideRegion.TOP_CENTER), TOP_RIGHT(InsideRegion.TOP_RIGHT),
+        BOTTOM_LEFT(InsideRegion.BOTTOM_LEFT), BOTTOM_RIGHT(InsideRegion.BOTTOM_RIGHT);
+
+        public final InsideRegion region;
+        HudPosition(InsideRegion region) { this.region = region; }
+    }
+
+    private static volatile HudPosition rangesPosition = HudPosition.TOP_LEFT;
+
     public static boolean crammingCount() { return crammingCount; }
+    public static HudPosition rangesPosition() { return rangesPosition; }
     public static List<RangeEntry> ranges() { return ranges; }
     public static boolean scrollToPick()  { return scrollToPick; }
 
@@ -41,4 +54,5 @@ public final class HeadcountSettings {
     public static void setCrammingCount(boolean v) { crammingCount = v; }
     public static void setScrollToPick(boolean v) { scrollToPick = v; }
     public static void setRanges(List<RangeEntry> v) { ranges = List.copyOf(v); }
+    public static void setRangesPosition(HudPosition v) { rangesPosition = v; }
 }

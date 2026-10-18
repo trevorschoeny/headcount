@@ -62,5 +62,22 @@ public class RangeChecks implements FabricClientGameTest {
         });
         ctx.takeScreenshot("headcount-range-counts");
         if (!got.equals(expected)) throw new AssertionError("range counts: expected " + expected + ", got " + got);
+
+        // Shots of the default list in each position the setting offers (for review; asserts nothing).
+        scene.world().getServer().runCommand("gamerule send_command_feedback false");
+        ctx.runOnClient(mc -> {
+            mc.gui.hud.getChat().clearMessages(false);
+            HeadcountSettings.setRanges(List.of(
+                    new RangeEntry(RangeSpec.of(16, Category.ALL), true),
+                    new RangeEntry(RangeSpec.of(32, Category.HOSTILE), true),
+                    new RangeEntry(RangeSpec.of(128, Category.HOSTILE), true)));
+        });
+        ctx.waitTicks(30);
+        for (HeadcountSettings.HudPosition pos : HeadcountSettings.HudPosition.values()) {
+            ctx.runOnClient(mc -> HeadcountSettings.setRangesPosition(pos));
+            ctx.waitTicks(2);
+            ctx.takeScreenshot("ranges-position-" + pos.name().toLowerCase());
+        }
+        ctx.runOnClient(mc -> HeadcountSettings.setRangesPosition(HeadcountSettings.HudPosition.TOP_LEFT));
     }
 }
