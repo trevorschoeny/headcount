@@ -32,15 +32,14 @@ public class CrammingChecks implements FabricClientGameTest {
     }
 
     /**
-     * Station "headcount:count": 18 pigs in one block read 18 against the default limit of
-     * 24, and the wheel picks one of them instead of moving the hotbar.
+     * Station "headcount:count": 18 pigs in one block read 18, and the wheel picks one of
+     * them instead of moving the hotbar.
      */
     private static void countsCrammedPigs(ClientGameTestContext ctx, SceneWorld.Opened scene) {
         aimAt(ctx, scene, "hc_count", 0);
         int count = ctx.computeOnClient(mc -> Cramming.count());
-        int limit = ctx.computeOnClient(Cramming::limit);
         ctx.takeScreenshot("headcount-count");
-        if (count != 18 || limit != 24) throw new AssertionError("18 crammed pigs should read 18 / 24; read " + count + " / " + limit);
+        if (count != 18) throw new AssertionError("18 crammed pigs should read 18; read " + count);
 
         int slot = selectedSlot(ctx);
         ctx.getInput().scroll(-1);

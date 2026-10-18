@@ -8,9 +8,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ScrollWheelHandler;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -24,7 +22,7 @@ import net.minecraft.world.scores.Team.CollisionRule;
  * <p>"Crammed" is vanilla's own test (LivingEntity.pushEntities): the entities pushing on
  * the one you look at, which are the pushable entities whose bounding boxes overlap its
  * box, not counting passengers. The count is that list plus the entity itself, so it is
- * the number vanilla compares to maxEntityCramming. Ten mobs in a row that each touch
+ * the number vanilla compares to maxEntityCramming (the readout leaves the limit out). Ten mobs in a row that each touch
  * only their neighbours read 3 from the middle one.
  *
  * <p>Everything is recomputed each frame from vanilla's crosshair pick
@@ -133,18 +131,6 @@ public final class Cramming {
     /** The pick's 1-based place among the crammed entities, or 0 before the wheel is used. */
     public static int pickNumber() {
         return pickedId == NONE ? 0 : indexOf(pickedId) + 1;
-    }
-
-    /**
-     * The maxEntityCramming value to count against. The game rule isn't sent to clients:
-     * in single player it is read from the integrated server; elsewhere it is vanilla's
-     * default until Headcount's server half sends the real value.
-     */
-    public static int limit(Minecraft mc) {
-        IntegratedServer server = mc.getSingleplayerServer();
-        return server != null
-                ? server.getGameRules().get(GameRules.MAX_ENTITY_CRAMMING)
-                : HeadcountSettings.DEFAULT_CRAMMING_LIMIT;
     }
 
     /** The picked entity, or null before the wheel is used on these crammed entities. */

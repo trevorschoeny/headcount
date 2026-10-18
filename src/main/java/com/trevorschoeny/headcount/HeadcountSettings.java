@@ -10,12 +10,7 @@ public final class HeadcountSettings {
 
     private HeadcountSettings() {}
 
-    // Vanilla's maxEntityCramming default. The game rule isn't sent to the client,
-    // so without Headcount on the server the cramming count measures against this.
-    // The setting's tooltip will say so when ConfigKit gives it a page.
-    public static final int DEFAULT_CRAMMING_LIMIT = 24;
-
-    // Looking at two or more overlapping entities shows "n / limit" near the crosshair.
+    // Looking at two or more overlapping entities shows how many just under the crosshair.
     private static volatile boolean crammingCount = true;
 
     // Looking at crammed entities takes the mouse wheel from the hotbar to step through them.
