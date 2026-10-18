@@ -1,5 +1,7 @@
 package com.trevorschoeny.headcount;
 
+import com.trevorschoeny.headcount.hud.CrammingReadout;
+
 import net.fabricmc.api.ClientModInitializer;
 
 /**
@@ -11,6 +13,8 @@ public final class HeadcountClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // Features register here as they land.
+        // The cramming count below the crosshair. Scrolling through the crammed entities
+        // needs no registration: it is the two mixins in mixin/.
+        CrammingReadout.register();
     }
 }

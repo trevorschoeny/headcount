@@ -13,6 +13,9 @@
   },
   "license": "MIT",
   "environment": "*",
+  "mixins": [
+    "headcount.mixins.json"
+  ],
   "entrypoints": {
     "client": [
       "com.trevorschoeny.headcount.HeadcountClient"
