@@ -34,7 +34,7 @@ public final class RangeNet {
 
     private static final int INTERVAL_TICKS = 20;
     // A client can't make the server count more than this many ranges.
-    static final int MAX_RANGES = 16;
+    public static final int MAX_RANGES = 16;
 
     /** Client to server: count these ranges around me (an empty list stops counting). */
     public record Watch(int revision, List<RangeSpec> ranges) implements CustomPacketPayload {

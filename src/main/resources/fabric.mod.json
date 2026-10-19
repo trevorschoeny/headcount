@@ -22,6 +22,9 @@
     ],
     "client": [
       "com.trevorschoeny.headcount.HeadcountClient"
+    ],
+    "modmenu": [
+      "com.trevorschoeny.headcount.settings.HeadcountModMenu"
     ]
   },
   "depends": {

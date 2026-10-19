@@ -29,6 +29,8 @@ java {
 
 repositories {
     maven { url 'https://maven.fabricmc.net/' }
+    // ModMenu, from Terraformers' Maven.
+    maven { url 'https://maven.terraformersmc.com/releases/' }
 }
 
 // MenuKit splits into main and client source sets. A project dependency sees only
@@ -47,6 +49,11 @@ dependencies {
     // nothing here reaches SlotKit.
     implementation project(':menukit')
     implementation rootProject.project(':menukit').sourceSets.client.output
+
+    // ModMenu opens the settings screen from the mods list (Mod Hub reads the same
+    // entrypoint). Soft dep at runtime: compileOnly for the API, localRuntime for the dev launch.
+    compileOnly "com.terraformersmc:modmenu:21.0.0"
+    localRuntime "com.terraformersmc:modmenu:21.0.0"
 }
 
 loom {
