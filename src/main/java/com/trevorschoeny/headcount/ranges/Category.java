@@ -21,11 +21,18 @@ import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
  * </ul>
  */
 public enum Category {
-    ALL("All"), MOBS("Mobs"), HOSTILE("Hostile"), PASSIVE("Passive"), NON_MOBS("Non-mobs");
+    ALL("All", "All entities"), MOBS("Mobs", "Mobs"), HOSTILE("Hostile", "Hostile"),
+    PASSIVE("Passive", "Passive"), NON_MOBS("Non-mobs", "Non-mobs");
 
+    /** In the filter's dropdown. */
     public final String label;
+    /** At the start of a HUD line: "All entities within 16 blocks", "Hostile within 32 blocks". */
+    public final String hudName;
 
-    Category(String label) { this.label = label; }
+    Category(String label, String hudName) {
+        this.label = label;
+        this.hudName = hudName;
+    }
 
     public boolean includes(EntityType<?> type) {
         return switch (this) {

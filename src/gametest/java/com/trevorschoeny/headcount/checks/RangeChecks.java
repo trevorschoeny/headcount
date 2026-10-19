@@ -67,10 +67,15 @@ public class RangeChecks implements FabricClientGameTest {
         scene.world().getServer().runCommand("gamerule send_command_feedback false");
         ctx.runOnClient(mc -> {
             mc.gui.hud.getChat().clearMessages(false);
+            // The defaults, plus a line for each look: passive's tint, a filtered range,
+            // and an empty range (no mob within 2 blocks).
             HeadcountSettings.setRanges(List.of(
                     new RangeEntry(RangeSpec.of(16, Category.ALL), true),
                     new RangeEntry(RangeSpec.of(32, Category.HOSTILE), true),
-                    new RangeEntry(RangeSpec.of(128, Category.HOSTILE), true)));
+                    new RangeEntry(RangeSpec.of(128, Category.HOSTILE), true),
+                    new RangeEntry(RangeSpec.of(64, Category.PASSIVE), true),
+                    new RangeEntry(new RangeSpec(128, Category.HOSTILE, List.of(Identifier.withDefaultNamespace("creeper"))), true),
+                    new RangeEntry(RangeSpec.of(2, Category.MOBS), true)));
         });
         ctx.waitTicks(30);
         for (HeadcountSettings.HudPosition pos : HeadcountSettings.HudPosition.values()) {

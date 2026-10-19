@@ -39,9 +39,4 @@ public record RangeSpec(int radius, Category category, List<Identifier> excluded
     public boolean counts(EntityType<?> type) {
         return category.includes(type) && !excluded.contains(BuiltInRegistries.ENTITY_TYPE.getKey(type));
     }
-
-    /** "Hostile within 32", with "(some)" when types are unticked. */
-    public String label() {
-        return category.label + (excluded.isEmpty() ? "" : " (some)") + " within " + radius;
-    }
 }
