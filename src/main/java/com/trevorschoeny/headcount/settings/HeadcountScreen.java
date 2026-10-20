@@ -11,7 +11,6 @@ import com.trevlar.menukit.api.element.ListView;
 import com.trevlar.menukit.api.element.PanelElement;
 import com.trevlar.menukit.api.element.ScrollContainer;
 import com.trevlar.menukit.api.element.TextLabel;
-import com.trevlar.menukit.api.element.TextRole;
 import com.trevlar.menukit.api.element.Toggle;
 import com.trevlar.menukit.api.layout.CrossAlign;
 import com.trevlar.menukit.api.panel.MKScreen;
@@ -55,7 +54,6 @@ public final class HeadcountScreen extends MKScreen {
                         .state(HeadcountSettings::rangesPosition, HeadcountSettings::setRangesPosition)
                         .build()))
                 .add(Divider.horizontal().build())
-                .add(TextLabel.builder().role(TextRole.HEADING).text(Component.literal("Range counts")).build())
                 .add(ranges.toolbar())
                 .add(ScrollContainer.builder().fitWidth().fillHeight().content(List.of(ranges)).build())
                 .build();

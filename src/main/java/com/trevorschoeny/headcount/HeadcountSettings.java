@@ -66,6 +66,14 @@ public final class HeadcountSettings {
     public static boolean crammingCount() { return crammingCount; }
     public static HudPosition rangesPosition() { return rangesPosition; }
     public static List<RangeEntry> ranges() { return ranges; }
+
+    /** The three shipped defaults, fresh ids each call: for resetting in a self-check. */
+    public static List<RangeEntry> defaultRanges() {
+        return List.of(
+                entry(RangeSpec.of(16, Category.ALL), true),
+                entry(RangeSpec.of(32, Category.HOSTILE), true),
+                entry(RangeSpec.of(128, Category.HOSTILE), true));
+    }
     public static boolean scrollToPick()  { return scrollToPick; }
 
     // Setters are not saved anywhere until ConfigKit, so a toggle lasts the session.

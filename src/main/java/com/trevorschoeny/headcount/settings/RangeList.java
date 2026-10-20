@@ -62,6 +62,7 @@ final class RangeList {
                 .items(HeadcountSettings::ranges)
                 .key(RangeEntry::id)
                 .row(entry -> row(entry.id()))
+                .title(Component.literal("Range counts"))
                 .add(Component.literal("+ Add range"), HeadcountSettings::addRange)
                 .addDisabledWhen(() -> HeadcountSettings.ranges().size() >= RangeNet.MAX_RANGES)
                 .remove(HeadcountSettings::removeRange)

@@ -20,6 +20,10 @@ public class SettingsShots implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext ctx) {
         try (SceneWorld.Opened scene = SceneWorld.open(ctx, "headcount", "ranges")) {
+            // RangeChecks (run earlier in this client session) leaves its own test list in
+            // HeadcountSettings; start "defaults" from the real shipped defaults.
+            ctx.runOnClient(mc -> HeadcountSettings.setRanges(HeadcountSettings.defaultRanges()));
+
             // MenuKit's shot size: 2560 x 1440 at GUI scale 5, the size its screens must fit.
             ctx.getInput().resizeWindow(2560, 1440);
             ctx.runOnClient(mc -> {
