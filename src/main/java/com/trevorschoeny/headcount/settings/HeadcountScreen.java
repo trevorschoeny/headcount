@@ -93,7 +93,7 @@ public final class HeadcountScreen extends MKScreen {
     private static String positionName(HudPosition pos) {
         return switch (pos) {
             case TOP_LEFT -> "Top left";
-            case TOP_CENTER -> "Top centre";
+            case TOP_CENTER -> "Top center";
             case TOP_RIGHT -> "Top right";
             case BOTTOM_LEFT -> "Bottom left";
             case BOTTOM_RIGHT -> "Bottom right";

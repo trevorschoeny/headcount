@@ -8,6 +8,7 @@
       "com.trevorschoeny.headcount.checks.CrammingChecks",
       "com.trevorschoeny.headcount.checks.CrammingShots",
       "com.trevorschoeny.headcount.checks.RangeChecks",
+      "com.trevorschoeny.headcount.checks.DedicatedServerChecks",
       "com.trevorschoeny.headcount.checks.SettingsShots"
     ]
   }
